@@ -1,18 +1,20 @@
-const User= require('../models/user.model');
+const User = require('../models/user.model');
 
-const obtenerUsuarios= ()=>{};
-const obtenerUsuarioPorId= ()=>{};
+const obtenerUsuarios = async () => {
+    return await User.find({});
+};
+const obtenerUsuarioPorId = () => { };
 
-const crearUsuario= async (user)=>{
-const newUser= new User(user)
-return await newUser.save()
+const crearUsuario = async (user) => {
+    const newUser = new User(user)
+    return await newUser.save()
 };
 
-const editarUsuario= ()=>{};
-const disableUsuario= ()=>{};
-const eliminarUsuario= ()=>{};
+const editarUsuario = () => { };
+const disableUsuario = () => { };
+const eliminarUsuario = () => { };
 
-module.exports={
+module.exports = {
     obtenerUsuarios,
     obtenerUsuarioPorId,
     crearUsuario,
