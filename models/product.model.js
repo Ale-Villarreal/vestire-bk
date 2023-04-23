@@ -1,8 +1,17 @@
 const {Schema, model}= require('mongoose');
 
 const producSchema= Schema({
-    name: String,
+    
+    id: String,
+    categoria: String,
+    subCategoria: String,
+    marca: String,
+    resumenDescripcion: String,
+    descripcion: String,
+    imagen: String,
     color: String,
-    disable: { type: Boolean, default: false}
+    precio: Number,
+    cantidadPorTalle: String
+
 });
 module.exports= model('vestire-product', producSchema)

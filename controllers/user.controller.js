@@ -1,4 +1,4 @@
-const {obtenerUsuarios,obtenerUsuarioPorId,crearUsuario,editarUsuario,disableUsuario,eliminarUsuario}= require('../service/user.service');
+const {obtenerUsuarios,obtenerUsuarioPorId,crearUsuario,editarUsuario,disableUsuario,eliminarUsuario}= require('../services/user.service');
 const getUsers= async()=>{
     try {
         

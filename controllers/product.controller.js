@@ -1,4 +1,4 @@
-const {obtenerProductos, obtenerProductoPorId, crearProducto, editarProducto, disableProducto, eliminarProdcucto}= require('../service/product.service');
+const {obtenerProductos, obtenerProductoPorId, crearProducto, editarProducto, disableProducto, eliminarProdcucto}= require('../services/product.service');
 
 const getProducts= async()=>{
     try {
