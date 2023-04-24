@@ -1,18 +1,21 @@
-const Product= require('../models/product.model');
+const express = require('express');
+const { query, validationResult } = require('express-validator');
 
-const obtenerProductos= async()=>{};
-const obtenerProductoPorId= async()=>{};
+const Product = require('../models/product.model');
 
-const crearProducto= async(artic)=>{
-const newArtic= new Product(artic)
-return await newArtic.save()
+const obtenerProductos = async () => { };
+const obtenerProductoPorId = async () => { };
+
+const crearProducto = async (artic) => {
+   const newArtic = new Product(artic)
+   return await newArtic.save()
 };
 
-const editarProducto= async()=>{};
-const disableProducto= async()=>{};
-const eliminarProdcucto= async()=>{};
+const editarProducto = async () => { };
+const disableProducto = async () => { };
+const eliminarProdcucto = async () => { };
 
-module.exports= {
+module.exports = {
    obtenerProductos,
    obtenerProductoPorId,
    crearProducto,
