@@ -1,11 +1,47 @@
 const { validationResult } = require('express-validator');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const { obtenerUsuarios, obtenerUsuarioPorId, crearUsuario, editarUsuario, eliminarUsuario } = require('../services/user.service');
+const { obtenerUsuarios, obtenerUsuarioPorId, obtenerUsuarioPorEmail, crearUsuario, editarUsuario, eliminarUsuario } = require('../services/user.service');
+
+const loginUser = async (req, res) => {
+    try {
+
+        //Encuentra los errores de validación en esta solicitud y los envuelve en un objeto con funciones útiles
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        const { email, password } = req.body;
+        // Validar si existe el usuario
+        const user = await obtenerUsuarioPorEmail({ email });
+        if (!user) return res.status(404).json('Usuario no encontrado.');
+        // Validar el password
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+        // Solicitar Token
+        const token = jwt.sign({
+            email: user.email,
+            id: user._id,
+            disable: user.disable,
+            admin: user.admin
+        }, process.env.TOKEN_SECRET)
+
+        res.header('auth-token', token).json({
+            error: null,
+            data: { token }
+        })
+        // res.status(200).json("deberia entregar token");
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
 
 const getUsers = async (req, res) => {
     try {
         const resp = await obtenerUsuarios();
-        if (resp.length === 0) return res.status(404).json('No hay usuarios en la Base de Datos.')
+        if (resp.length === 0) return res.status(404).json('No hay usuarios en la Base de Datos.');
         res.status(200).json(resp);
     } catch (error) {
         res.status(500).json(error.message);
@@ -23,16 +59,32 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getUserByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        const resp = await obtenerUsuarioPorEmail(email);
+        if (!resp) return res.status(404).json('Usuario no encontrado.');
+        res.status(200).json(resp);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
 const createUser = async (req, res) => {
     try {
 
-        // Encuentra los errores de validación en esta solicitud y los envuelve en un objeto con funciones útiles
+        //Encuentra los errores de validación en esta solicitud y los envuelve en un objeto con funciones útiles
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const userData = req.body;
+        const { password } = userData;
+        const saltRound = 10;
+        const salt = bcrypt.genSaltSync(saltRound);
+        const pswHash = bcrypt.hashSync(password, salt);
+        userData.password = pswHash;
         const resp = await crearUsuario(userData);
+        //res.status(201).json(pswHash);
         res.status(201).json(resp);
     } catch (error) {
         res.status(500).json(error.message);
@@ -83,5 +135,6 @@ module.exports = {
     createUser,
     editUser,
     disableUser,
-    deleteUser
+    deleteUser,
+    loginUser
 };

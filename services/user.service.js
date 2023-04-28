@@ -1,5 +1,3 @@
-
-
 const User = require('../models/user.model');
 
 const obtenerUsuarios = async () => {
@@ -7,7 +5,12 @@ const obtenerUsuarios = async () => {
 };
 
 const obtenerUsuarioPorId = (id) => {
-    return User.findById(id)
+    return User.findById(id);
+};
+
+const obtenerUsuarioPorEmail = (emailFind) => {
+    const email = emailFind;
+    return User.findOne(email);
 };
 
 const crearUsuario = async (user) => {
@@ -26,6 +29,7 @@ const eliminarUsuario = (id) => {
 module.exports = {
     obtenerUsuarios,
     obtenerUsuarioPorId,
+    obtenerUsuarioPorEmail,
     crearUsuario,
     editarUsuario,
     eliminarUsuario
