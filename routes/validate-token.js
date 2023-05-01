@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-// middleware to validate token (rutas protegidas)
+// middleware para validar el token (rutas protegidas)
 const verifyToken = (req, res, next) => {
   const token = req.header('auth-token')
   if (!token) return res.status(401).json({ error: 'Acceso denegado' })
@@ -11,6 +11,27 @@ const verifyToken = (req, res, next) => {
   } catch (error) {
     res.status(400).json({ error: 'token no es válido' })
   }
-}
+};
 
-module.exports = { verifyToken }; 
+//middleware para verificar el token JWT y asegurarte de que el usuario
+// que realiza la solicitud está autenticado.
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Token no proporcionado' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+    console.log(decodedToken)
+    req.userId = decodedToken.id;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
+};
+
+module.exports = {
+  verifyToken,
+  authMiddleware
+}; 
