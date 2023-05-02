@@ -1,7 +1,8 @@
-const {Schema, model}= require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const producSchema= Schema({
-    
+const { Schema, model } = require('mongoose');
+
+const producSchema = Schema({
     destacado: Boolean,
     categoria: String,
     subCategoria: String,
@@ -11,9 +12,11 @@ const producSchema= Schema({
     imagen: String,
     color: String,
     precio: Number,
-    cantidadPorTalle: { xs:Number, m: Number, l:Number, xl: Number,
-    s:Number},
+    cantidadPorTalle: {
+        xs: Number, m: Number, l: Number, xl: Number,
+        s: Number
+    },
     clase: []
-
 });
-module.exports= model('vestire-product', producSchema)
+
+module.exports = model('vestire-product', producSchema)

@@ -12,26 +12,31 @@ const loginUser = async (req, res) => {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+
         const { email, password } = req.body;
+
         // Validar si existe el usuario
         const user = await obtenerUsuarioPorEmail({ email });
         if (!user) return res.status(404).json('Usuario no encontrado.');
-        // Validar el password
 
+        // Validar el password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+        console.log(user)
         // Solicitar Token
         const token = jwt.sign({
             email: user.email,
             id: user._id,
             disable: user.disable,
             admin: user.admin
-        }, process.env.TOKEN_SECRET)
+        },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '1h' });
 
         res.header('auth-token', token).json({
             error: null,
             data: { token }
-        })
+        });
         // res.status(200).json("deberia entregar token");
     } catch (error) {
         res.status(500).json(error.message);

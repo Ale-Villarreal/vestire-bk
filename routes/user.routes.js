@@ -6,7 +6,6 @@ const { emailExists } = require('../helpers/validations');
 
 route.get('/get-users', getUsers);
 
-
 route.post('/login',
   // debe ser un correo electrónico valido
   body('email').isEmail().withMessage("Formato de correo electrónico no valido.").not().isEmpty().withMessage("El campo email esta vacio."),
