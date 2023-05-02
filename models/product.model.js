@@ -1,9 +1,7 @@
 const { Schema, model } = require('mongoose');
 
-const { Schema, model } = require('mongoose');
-
 const producSchema = Schema({
-    destacado: Boolean,
+    destacado: { type: Boolean, default: false },
     categoria: String,
     subCategoria: String,
     marca: String,
@@ -19,4 +17,4 @@ const producSchema = Schema({
     clase: []
 });
 
-module.exports = model('vestire-product', producSchema)
+module.exports = model('vestire-product', producSchema);

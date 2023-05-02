@@ -101,7 +101,6 @@ const editUser = async (req, res) => {
         const { id } = req.params;
         const userData = req.body;
         const resp = await editarUsuario(id, userData);
-        console.log(resp);
         if (!resp) return res.status(404).json('Usuario no encontrado.');
         res.status(200).json(resp);
     } catch (error) {
@@ -126,7 +125,6 @@ const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
         const resp = await eliminarUsuario(id);
-        console.log(resp);
         if (!resp) return res.status(404).json('Usuario no encontrado.');
         res.status(200).json(resp);
     } catch (error) {
