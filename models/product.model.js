@@ -11,11 +11,7 @@ const producSchema = Schema({
     imagen: String,
     color: String,
     precio: Number,
-    cantidadPorTalle: {
-        xs: Number, m: Number, l: Number, xl: Number,
-        s: Number
-    },
-    clase: []
+    cantidadPorTalle: String
 
 });
 module.exports = model('vestire-product', producSchema)
