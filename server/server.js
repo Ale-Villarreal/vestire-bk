@@ -13,7 +13,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.use('/', (req, res) => {
+app.use('/home', (req, res) => {
     res.send('<h1> Bienvenidos a la API de Vestire </h1>');
 });
 
