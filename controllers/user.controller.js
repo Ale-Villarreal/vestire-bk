@@ -2,7 +2,8 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { obtenerUsuarios, obtenerUsuarioPorId, obtenerUsuarioPorEmail, crearUsuario, editarUsuario, eliminarUsuario } = require('../services/user.service');
+const { obtenerUsuarios, obtenerUsuarioPorId, obtenerUsuarioPorEmail, crearUsuario, editarUsuario, eliminarUsuario,
+    usuarioEsAdmin } = require('../services/user.service');
 
 const loginUser = async (req, res) => {
     try {
@@ -13,25 +14,29 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { email, password } = req.body;
+        const { username, email, password } = req.body;
 
-        // Validar si existe el usuario
+        // Validar si existe el usuario por el email
         const user = await obtenerUsuarioPorEmail({ email });
-        if (!user) return res.status(404).json('Usuario no encontrado.');
+        if (!user) return res.status(404).json('Usuario o contraseña invalido.');
 
         // Validar el password
         const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
-        console.log(user)
-        // Solicitar Token
+        if (!validPassword) return res.status(400).json({ error: 'Usuario o contraseña invalido.' })
+
+        // Validar el userName
+        if (user.username !== username) return res.status(400).json({ error: 'Usuario o contraseña invalido.' })
+
+        // Generar y enviar el Token
         const token = jwt.sign({
+            username: user.username,
             email: user.email,
             id: user._id,
             disable: user.disable,
             admin: user.admin
         },
             process.env.TOKEN_SECRET,
-            { expiresIn: '1h' });
+            { expiresIn: '1d' });
 
         res.header('auth-token', token).json({
             error: null,
@@ -132,6 +137,32 @@ const deleteUser = async (req, res) => {
     }
 };
 
+const isAdmin = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(401).json({ message: 'Debe de proporcionar un Token en la solicitud.' });
+        }
+        const token = authHeader.split(' ')[1];
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+        const resp = await usuarioEsAdmin(decodedToken.id);
+        res.status(200).json(resp);
+
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
+
+const info = async (req, res) => {
+    try {
+        const resp = await obtenerUsuarioPorId(req.userId);
+        res.status(200).json(resp);
+
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+};
+
 module.exports = {
     getUsers,
     getUserById,
@@ -139,5 +170,7 @@ module.exports = {
     editUser,
     disableUser,
     deleteUser,
-    loginUser
+    loginUser,
+    isAdmin,
+    info
 };

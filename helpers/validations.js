@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const jwt = require('jsonwebtoken');
 
 const emailExists = async (email) => {
   const searchEmail = await User.find({ email });
@@ -11,5 +12,6 @@ const emailExists = async (email) => {
 module.exports = {
   emailExists,
 }
+
 
 // /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/
