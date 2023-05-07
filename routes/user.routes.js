@@ -1,8 +1,9 @@
 const { Router } = require('express')
 const route = Router();
-const { body } = require('express-validator');
-const { getUsers, getUserById, createUser, editUser, disableUser, deleteUser, loginUser } = require('../controllers/user.controller');
+const { body, param } = require('express-validator');
+const { getUsers, getUserById, createUser, editUser, disableUser, deleteUser, loginUser, isAdmin, info } = require('../controllers/user.controller');
 const { emailExists } = require('../helpers/validations');
+const { authMiddleware } = require('../routes/validate-token');
 
 route.get('/get-users', getUsers);
 
@@ -27,5 +28,9 @@ route.patch('/edit-user/:id', editUser);
 route.patch('/disable-user/:id', disableUser);
 
 route.delete('/delete-user/:id', deleteUser);
+
+route.post('/check-user-admin', isAdmin);
+
+route.get('/info', authMiddleware, info);
 
 module.exports = route;

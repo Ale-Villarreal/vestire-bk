@@ -2,14 +2,15 @@ const { Schema, model } = require('mongoose');
 
 const producSchema = Schema({
     destacado: { type: Boolean, default: false },
-    categoria: String,
-    subCategoria: String,
-    marca: String,
-    resumenDescripcion: String,
-    descripcion: String,
-    imagen: String,
-    color: String,
-    precio: Number,
+    codigo: { type: String, required: true },
+    categoria: { type: String, required: true },
+    subCategoria: { type: String, required: true },
+    marca: { type: String },
+    resumenDescripcion: { type: String, required: true },
+    descripcion: { type: String, required: true },
+    imagen: { type: String },
+    color: { type: String, required: true },
+    precio: { type: Number, required: true },
     cantidadPorTalle: {
         xs: Number, m: Number, l: Number, xl: Number,
         s: Number

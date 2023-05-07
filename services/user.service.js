@@ -4,13 +4,13 @@ const obtenerUsuarios = async () => {
     return await User.find({});
 };
 
-const obtenerUsuarioPorId = (id) => {
-    return User.findById(id);
+const obtenerUsuarioPorId = async (id) => {
+    return await User.findById(id);
 };
 
-const obtenerUsuarioPorEmail = (emailFind) => {
+const obtenerUsuarioPorEmail = async (emailFind) => {
     const email = emailFind;
-    return User.findOne(email);
+    return await User.findOne(email);
 };
 
 const crearUsuario = async (user) => {
@@ -18,12 +18,22 @@ const crearUsuario = async (user) => {
     return await newUser.save()
 };
 
-const editarUsuario = (id, userData) => {
-    return User.findByIdAndUpdate(id, userData);
+const editarUsuario = async (id, userData) => {
+    return await User.findByIdAndUpdate(id, userData);
 };
 
-const eliminarUsuario = (id) => {
-    return User.findByIdAndDelete(id);
+const eliminarUsuario = async (id) => {
+    return await User.findByIdAndDelete(id);
+};
+
+const usuarioEsAdmin = async (id) => {
+    const user = await obtenerUsuarioPorId(id);
+    return user.admin;
+};
+
+const Info = async (id) => {
+    const user = await obtenerUsuarioPorId(id);
+    return user;
 };
 
 module.exports = {
@@ -32,5 +42,7 @@ module.exports = {
     obtenerUsuarioPorEmail,
     crearUsuario,
     editarUsuario,
-    eliminarUsuario
+    eliminarUsuario,
+    usuarioEsAdmin,
+    Info
 };

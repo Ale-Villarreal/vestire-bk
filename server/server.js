@@ -13,20 +13,16 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-app.use('/home', (req, res) => {
-    res.send('<h1> Bienvenidos a la API de Vestire </h1>');
-});
-
-
 app.use('/users', userRoute);
 app.use('/product', productRoute);
 
 //rutas protegidas
-app.use('/info', authMiddleware, (req, res) => {
-    const user = req.userId;
-    res.json(`Esto es la info confidencial solicitada por el User: ${user}`)
-});
+//app.use('/info', info);
+
+// const user = req.userId;
+// res.json(`Esto es la info confidencial solicitada por el User: ${user}`)
+
 
 app.listen(port, () => {
-    console.log(`estamos escucando en http://localhost:${port}`);
+    console.log(`Estamos escuchando en http://localhost:${port}`);
 });
