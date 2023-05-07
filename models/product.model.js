@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 
 const producSchema = Schema({
     destacado: { type: Boolean, default: false },
@@ -16,6 +16,7 @@ const producSchema = Schema({
         s: Number
     },
     clase: []
+
 });
 
-module.exports = model('vestire-product', producSchema);
+module.exports = model("vestire-product", producSchema);
