@@ -16,7 +16,6 @@ const producSchema = Schema({
         s: Number
     },
     clase: []
-
 });
 
 module.exports = model("vestire-product", producSchema);

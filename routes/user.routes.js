@@ -29,7 +29,7 @@ route.patch('/disable-user/:id', disableUser);
 
 route.delete('/delete-user/:id', deleteUser);
 
-route.post('/check-user-admin', isAdmin);
+route.get('/check-user-admin', isAdmin);
 
 route.get('/info', authMiddleware, info);
 
