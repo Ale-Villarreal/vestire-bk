@@ -6,6 +6,7 @@ const userSchema = Schema({
     password: { type: String, required: true },
     disable: { type: Boolean, default: false },
     admin: { type: Boolean, default: false },
+    favorites: []
 });
 
 module.exports = model('vestire-user', userSchema);
