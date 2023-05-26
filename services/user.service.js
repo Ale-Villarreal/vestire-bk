@@ -14,8 +14,8 @@ const obtenerUsuarioPorEmail = async (emailFind) => {
 };
 
 const obtenerUsuarioPorNombre = async (userNameFind) => {
-  const userName = userNameFind;
-  return await User.findOne({ userName });
+  const username = userNameFind;
+  return await User.findOne({ username });
 };
 
 const crearUsuario = async (user) => {
