@@ -23,7 +23,7 @@ const loginUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Validar si existe el usuario por el email
-    const user = await obtenerUsuarioPorEmail({ email });
+    const user = await obtenerUsuarioPorEmail(email);
     if (!user) return res.status(404).json("Usuario o contraseña invalido.");
 
     // Validar el password
