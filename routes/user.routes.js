@@ -12,6 +12,7 @@ const {
   isAdmin,
   info,
   getUserByEmail,
+  getUserByUserName,
 } = require("../controllers/user.controller");
 const { emailExists } = require("../helpers/validations");
 const { authMiddleware } = require("../routes/validate-token");
@@ -80,5 +81,7 @@ route.get("/check-user-admin", isAdmin);
 route.get("/info", authMiddleware, info);
 
 route.get("/get-user-by-email/:email", getUserByEmail);
+
+route.get("/get-user-by-username/:username", getUserByUserName);
 
 module.exports = route;

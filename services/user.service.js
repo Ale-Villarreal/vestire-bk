@@ -13,6 +13,11 @@ const obtenerUsuarioPorEmail = async (emailFind) => {
   return await User.findOne({ email });
 };
 
+const obtenerUsuarioPorNombre = async (userNameFind) => {
+  const userName = userNameFind;
+  return await User.findOne({ userName });
+};
+
 const crearUsuario = async (user) => {
   const newUser = new User(user);
   return await newUser.save();
@@ -45,4 +50,5 @@ module.exports = {
   eliminarUsuario,
   usuarioEsAdmin,
   Info,
+  obtenerUsuarioPorNombre,
 };

@@ -10,6 +10,7 @@ const {
   editarUsuario,
   eliminarUsuario,
   usuarioEsAdmin,
+  obtenerUsuarioPorNombre,
 } = require("../services/user.service");
 
 const loginUser = async (req, res) => {
@@ -90,6 +91,18 @@ const getUserByEmail = async (req, res) => {
     res.status(500).json(error.message);
   }
 };
+
+const getUserByUserName = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const resp = await obtenerUsuarioPorNombre(username);
+    if (!resp) return res.status(404).json("Usuario no encontrado.");
+    res.status(200).json(resp);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     //Encuentra los errores de validación en esta solicitud y los envuelve en un objeto con funciones útiles
@@ -184,4 +197,5 @@ module.exports = {
   isAdmin,
   info,
   getUserByEmail,
+  getUserByUserName,
 };
