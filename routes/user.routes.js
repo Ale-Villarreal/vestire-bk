@@ -46,6 +46,8 @@ route.post(
 
 route.get("/get-user-by-id/:id", getUserById);
 
+route.get("/get-user-by-token", authMiddleware, getUserById);
+
 route.post(
   "/create-user",
   // Debe de ingresar el nombre de usuario
