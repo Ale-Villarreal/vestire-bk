@@ -72,9 +72,9 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.userId;
     const resp = await obtenerUsuarioPorId(id);
-    if (!resp) return res.status(404).json("Usuario no encontrado.");
+    if (!resp) return res.status(404).json("Usuario no encontrado no hay usuario.");
     res.status(200).json(resp);
   } catch (error) {
     res.status(500).json(error.message);
