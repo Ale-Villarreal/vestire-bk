@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require('nodemailer');
 
 const {
   obtenerUsuarios,
@@ -186,6 +187,50 @@ const info = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    // Aquí puedes realizar la lógica para verificar si el correo electrónico existe en tu base de datos
+    const resp = await obtenerUsuarioPorEmail(email);
+    console.log(email)
+    if (!resp) return res.status(404).json("Usuario no encontrado.");
+
+
+    //res.status(200).json(resp);
+    // y generar un token único para el usuario
+
+    // Envío de correo electrónico con instrucciones para restablecer la contraseña
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+        user: 'gudrun7@ethereal.email',
+        pass: 'wxTguubctgAhUdDwY8'
+      }
+    });
+
+    const mailOptions = {
+      from: 'avillarreal@live.com.ar',
+      to: email,
+      subject: 'Recuperación de contraseña',
+      text: 'Sigue este enlace para restablecer tu contraseña: http://localhost:5000/reset-password?token=your_token'
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error al enviar el correo electrónico');
+      } else {
+        console.log('Correo electrónico enviado: ' + info.response);
+        res.send('Correo electrónico enviado con las instrucciones para restablecer la contraseña');
+      }
+    });
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
@@ -198,4 +243,5 @@ module.exports = {
   info,
   getUserByEmail,
   getUserByUserName,
+  forgotPassword
 };
