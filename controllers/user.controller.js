@@ -1,6 +1,8 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const emailjs = require('emailjs-com');
+const { generateToken, generateUUID, getUserDataByToken, generateHash } = require('../helpers/validations');
 
 const {
   obtenerUsuarios,
@@ -20,34 +22,29 @@ const loginUser = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
     const { username, email, password } = req.body;
-
     // Validar si existe el usuario por el email
+    //Un solo mensaje para todos.
+    const msgErr = [{ msg: "Verifique los datos ingresados no son correctos." }]
     const user = await obtenerUsuarioPorEmail(email);
-    if (!user) return res.status(404).json("Usuario o contraseña invalido.");
-
+    if (!user) return res.status(404).json({ errors: msgErr });
     // Validar el password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword)
-      return res.status(400).json({ error: "Usuario o contraseña invalido." });
-
+      return res.status(400).json({ errors: msgErr });
     // Validar el userName
     if (user.username !== username)
-      return res.status(400).json({ error: "Usuario o contraseña invalido." });
+      return res.status(400).json({ errors: msgErr });
 
     // Generar y enviar el Token
-    const token = jwt.sign(
-      {
-        username: user.username,
-        email: user.email,
-        id: user._id,
-        disable: user.disable,
-        admin: user.admin,
-      },
-      process.env.TOKEN_SECRET,
-      { expiresIn: "1d" }
-    );
+    const data = {
+      username: user.username,
+      email: user.email,
+      id: user._id,
+      disable: user.disable,
+      admin: user.admin
+    }
+    const token = generateToken(data);
 
     res.header("auth-token", token).json({
       error: null,
@@ -72,7 +69,7 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const id = req.userId;
+    const { id } = req.params;
     const resp = await obtenerUsuarioPorId(id);
     if (!resp) return res.status(404).json("Usuario no encontrado no hay usuario.");
     res.status(200).json(resp);
@@ -169,8 +166,8 @@ const isAdmin = async (req, res) => {
         .json({ message: "Debe de proporcionar un Token en la solicitud." });
     }
     const token = authHeader.split(" ")[1];
-    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
-    const resp = await usuarioEsAdmin(decodedToken.id);
+    const { data } = jwt.verify(token, process.env.TOKEN_SECRET);
+    const resp = await usuarioEsAdmin(data.id);
     res.status(200).json(resp);
   } catch (error) {
     res.status(500).json(error.message);
@@ -186,6 +183,85 @@ const info = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    // Aquí puedes realizar la lógica para verificar si el correo electrónico existe en tu base de datos
+    const resp = await obtenerUsuarioPorEmail(email);
+    if (!resp) return res.status(404).json("Usuario no encontrado.");
+
+    // Generar y enviar el Token
+    const data = {
+      username: resp.username,
+      email: resp.email,
+      id: resp._id,
+      disable: resp.disable,
+      admin: resp.admin,
+    };
+    //res.status(200).json(resp);
+    // y generar un token único para el usuario
+    const token = generateToken(data);
+    // Envío de correo electrónico con instrucciones para restablecer la contraseña
+    const serviceID = 'service_qr3oc0u';
+    const templateID = 'template_a77neto';
+    const publicKey = 'DHInymn9tRiGGLkpA'
+    const accessToken = 'RrJ8VuarB_yQ5MpVmv77O'
+    const user_name = 'Alejandro';
+    const from_name = 'Vestire.com';
+    const receiverEmail = 'avillarreal@live.com.ar';
+    const subject = 'Restablecimiento de contraseña';
+    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: http://localhost:5173/reset-password-page?token=${token}`;
+    // Otros parámetros que puedas necesitar, como el nombre del usuario, etc.
+    const templateParams = {
+      accessToken: accessToken,
+      from_name: from_name,
+      user_name: user_name,
+      to_email: receiverEmail,
+      subject: subject,
+      message: message,
+    };
+    res.send({ message });
+    // emailjs.init(publicKey)
+
+    // emailjs
+    //   .send(serviceID, templateID, templateParams, publicKey)
+    //   .then((response) => {
+    //     console.log('Correo electrónico enviado', response);
+    //     res.send('Correo electrónico enviado con las instrucciones para restablecer la contraseña');
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error al enviar el correo electrónico', error);
+    //     res.status(500).send('Error al enviar el correo electrónico');
+    //   });
+
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+const resetPassword = async (req, res) => {
+  console.log("estoy en el reset pass")
+  const token = req.headers.authorization;
+  // recuperar la nueva contraseña.
+  const newPass = req.body.password;
+  //console.log(token)
+  try {
+    //Recuperar info del usurario con el token recibido.
+    const userData = await getUserDataByToken(token);
+    //Realizar Hash de la nueva contraseña.
+    const pswHash = generateHash(newPass);
+    //acrtualizar la nueva contraseña el la base de datos
+    const password = pswHash;
+    const resp = await editarUsuario(userData.id, { password });
+    //dar el aviso de ok
+    if (!resp) return res.status(404).json("Usuario no encontrado.");
+    res.status(200).json(resp);
+    //redirigir a la pagina de login
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+}
+
 module.exports = {
   getUsers,
   getUserById,
@@ -198,4 +274,6 @@ module.exports = {
   info,
   getUserByEmail,
   getUserByUserName,
+  forgotPassword,
+  resetPassword
 };

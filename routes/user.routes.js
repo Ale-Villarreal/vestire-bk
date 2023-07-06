@@ -13,6 +13,8 @@ const {
   info,
   getUserByEmail,
   getUserByUserName,
+  forgotPassword,
+  resetPassword
 } = require("../controllers/user.controller");
 const { emailExists } = require("../helpers/validations");
 const { authMiddleware } = require("../routes/validate-token");
@@ -85,5 +87,10 @@ route.get("/info", authMiddleware, info);
 route.get("/get-user-by-email/:email", getUserByEmail);
 
 route.get("/get-user-by-username/:username", getUserByUserName);
+
+// Ruta para manejar la solicitud de recuperación de contraseña
+route.post('/forgot-password', forgotPassword);
+// Ruta para manejar el restablecimiento de la contraseña
+route.post('/reset-password', authMiddleware, resetPassword);
 
 module.exports = route;
