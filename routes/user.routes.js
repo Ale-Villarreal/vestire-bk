@@ -57,6 +57,16 @@ route.post(
     .not()
     .isEmpty()
     .withMessage("Debe de ingresar el nombre de usuario."),
+  // Debe de ingresar su Nombre
+  body("firstname")
+    .not()
+    .isEmpty()
+    .withMessage("Debe de ingresar su Nombre."),
+  // Debe de ingresar su Nombre
+  body("lastname")
+    .not()
+    .isEmpty()
+    .withMessage("Debe de ingresar su Apellido."),
   // debe ser un correo electrónico valido
   body("email")
     .isEmail()
