@@ -206,11 +206,11 @@ const forgotPassword = async (req, res) => {
     const templateID = 'template_a77neto';
     const publicKey = 'DHInymn9tRiGGLkpA'
     const accessToken = 'RrJ8VuarB_yQ5MpVmv77O'
-    const user_name = 'Alejandro';
+    const user_name = resp.username;
     const from_name = 'Vestire.com';
-    const receiverEmail = 'avillarreal@live.com.ar';
+    const receiverEmail = resp.email;
     const subject = 'Restablecimiento de contraseña';
-    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: http://localhost:5173/reset-password-page?token=${token}`;
+    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: https://vestire.onrender.com/reset-password-page?token=${token}`;
     // Otros parámetros que puedas necesitar, como el nombre del usuario, etc.
     const templateParams = {
       accessToken: accessToken,
@@ -220,19 +220,20 @@ const forgotPassword = async (req, res) => {
       subject: subject,
       message: message,
     };
-    res.send({ message });
-    // emailjs.init(publicKey)
 
-    // emailjs
-    //   .send(serviceID, templateID, templateParams, publicKey)
-    //   .then((response) => {
-    //     console.log('Correo electrónico enviado', response);
-    //     res.send('Correo electrónico enviado con las instrucciones para restablecer la contraseña');
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error al enviar el correo electrónico', error);
-    //     res.status(500).send('Error al enviar el correo electrónico');
-    //   });
+    emailjs.init(publicKey)
+    //res.send({ message });
+    emailjs
+      .send(serviceID, templateID, templateParams, publicKey)
+      .then((response) => {
+        console.log('Correo electrónico enviado', response);
+        //res.send('Correo electrónico enviado con las instrucciones para restablecer la contraseña');
+        res.send({ message });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el correo electrónico', error);
+        res.status(500).send('Error al enviar el correo electrónico');
+      });
 
   } catch (error) {
     res.status(500).json(error.message);
