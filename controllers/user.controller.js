@@ -68,8 +68,10 @@ const getUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
+
   try {
-    const { id } = req.params;
+    const id = req.userId;
+
     const resp = await obtenerUsuarioPorId(id);
     if (!resp) return res.status(404).json("Usuario no encontrado no hay usuario.");
     res.status(200).json(resp);
@@ -241,7 +243,6 @@ const forgotPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  console.log("estoy en el reset pass")
   const token = req.headers.authorization;
   // recuperar la nueva contraseña.
   const newPass = req.body.password;
