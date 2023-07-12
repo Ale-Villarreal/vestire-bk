@@ -1,7 +1,10 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const emailjs = require('emailjs-com');
+const emailjs = require('@emailjs/browser');
+const XMLHttpRequest = require('xhr2');
+global.XMLHttpRequest = require('xhr2');
+
 const { generateToken, generateUUID, getUserDataByToken, generateHash } = require('../helpers/validations');
 
 const {
@@ -68,10 +71,8 @@ const getUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-
   try {
     const id = req.userId;
-
     const resp = await obtenerUsuarioPorId(id);
     if (!resp) return res.status(404).json("Usuario no encontrado no hay usuario.");
     res.status(200).json(resp);
@@ -140,7 +141,6 @@ const disableUser = async (req, res) => {
     const { id } = req.params;
     const disable = true;
     const resp = await editarUsuario(id, { disable });
-    console.log(resp);
     if (!resp) return res.status(404).json("Usuario no encontrado.");
     res.status(200).json(resp);
   } catch (error) {
@@ -223,7 +223,7 @@ const forgotPassword = async (req, res) => {
       message: message,
     };
 
-    emailjs.init(publicKey)
+    //emailjs.init(publicKey)
     //res.send({ message });
     emailjs
       .send(serviceID, templateID, templateParams, publicKey)
