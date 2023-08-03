@@ -10,8 +10,9 @@ const emailExists = async (email) => {
   return false
 }
 
-const userDisable = async () => {
-  const userIsDisabled = await User.find({ disable })
+const userDisable = async (email) => {
+  const user = await User.find({ email })
+  const userIsDisabled = user.disable
   if (userIsDisabled) {
     throw new Error(
       'El usuario se encuentra deshabilitado. Ponganse en contacto con el administrador.'
