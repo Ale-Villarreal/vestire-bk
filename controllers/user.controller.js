@@ -212,7 +212,7 @@ const forgotPassword = async (req, res) => {
     const from_name = 'Vestire.com';
     const receiverEmail = resp.email;
     const subject = 'Restablecimiento de contraseña';
-    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: https://vestire.onrender.com/reset-password-page?token=${token}`;
+    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: https://vestire.netlify.app/reset-password-page?token=${token}`;
     // Otros parámetros que puedas necesitar, como el nombre del usuario, etc.
     const templateParams = {
       accessToken: accessToken,
