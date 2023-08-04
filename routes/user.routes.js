@@ -36,8 +36,8 @@ route.post(
     .withMessage('Formato de correo electrónico no valido.')
     .not()
     .isEmpty()
-    .custom(userDisable)
-    .withMessage('El campo email esta vacio.'),
+    .withMessage('El campo email esta vacio.')
+    .custom(userDisable),
   // Requerimientos de conytraña
   body('password')
     .matches(
