@@ -209,15 +209,15 @@ const forgotPassword = async (req, res) => {
     // y generar un token único para el usuario
     const token = generateToken(data)
     // Envío de correo electrónico con instrucciones para restablecer la contraseña
-    const serviceID = 'service_qr3oc0u'
-    const templateID = 'template_a77neto'
-    const publicKey = 'DHInymn9tRiGGLkpA'
-    const accessToken = 'RrJ8VuarB_yQ5MpVmv77O'
+    const serviceID = process.env.SERVICE_ID
+    const templateID = process.env.TEMPLATE_ID
+    const publicKey = process.env.PUBLIC_KEY
+    const accessToken = process.env.ACCESS_TOKEN
     const user_name = resp.username
-    const from_name = 'Vestire.com'
+    const from_name = process.env.FROM_NAME
     const receiverEmail = resp.email
-    const subject = 'Restablecimiento de contraseña'
-    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: https://vestire.netlify.com/reset-password-page?token=${token}`
+    const subject = process.env.SUBJECT
+    const message = `¡Hola! Haz clic en el siguiente enlace para restablecer tu contraseña: ${process.env.URL_RESET_PASSWORD}?token=${token}`
     // Otros parámetros que puedas necesitar, como el nombre del usuario, etc.
     const templateParams = {
       accessToken: accessToken,
